@@ -1,103 +1,50 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React from 'react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, Stars, Html } from '@react-three/drei';
+import Planet from '../components/Planet';
+import Orbit from '../components/Orbit';
+import Spaceship from '../components/Spaceship';
+
+const planets = [
+  { name: 'Mercury', distance: 5, size: 0.5, speed: 1.6, color: 'gray' },
+  { name: 'Venus', distance: 7, size: 0.8, speed: 1.2, color: 'orange' },
+  { name: 'Earth', distance: 9, size: 1, speed: 1, color: 'blue' },
+  { name: 'Mars', distance: 11, size: 0.7, speed: 0.8, color: 'red' },
+  { name: 'Jupiter', distance: 14, size: 1.2, speed: 0.6, color: 'tan' },
+  { name: 'Saturn', distance: 17, size: 1.1, speed: 0.4, color: 'goldenrod' },
+  { name: 'Uranus', distance: 20, size: 0.9, speed: 0.3, color: 'lightblue' },
+  { name: 'Neptune', distance: 23, size: 0.8, speed: 0.2, color: 'darkblue' },
+];
+
+export default function SolarSystem() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <Canvas camera={{ position: [0, 20, 60], fov: 65 }} style={{ width: '100vw', height: '100vh' }}>
+      <ambientLight intensity={0.3} />
+      <pointLight position={[0, 0, 0]} intensity={3} />
+      <OrbitControls />
+      <Stars />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      {/* Sun */}
+      <mesh>
+        <sphereGeometry args={[2.5, 32, 32]} />
+        <meshBasicMaterial color="yellow" />
+        <Html position={[0, 3, 0]} center>
+          <div style={{ color: 'white', fontWeight: 'bold' }}>Sun</div>
+        </Html>
+      </mesh>
+
+      {/* Animated Spaceship orbiting the solar system */}
+      <Spaceship orbitRadius={25} speed={0.7} height={2} />
+
+      {/* Planets & Orbits */}
+      {planets.map((planet, idx) => (
+        <React.Fragment key={idx}>
+          <Orbit radius={planet.distance} />
+          <Planet {...planet} />
+        </React.Fragment>
+      ))}
+    </Canvas>
   );
 }
